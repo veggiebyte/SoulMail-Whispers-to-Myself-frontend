@@ -20,7 +20,7 @@ return (
     <nav>
       {user ? (
         <ul>
-          <li>The space is yours, {user.username}</li>
+          <li>The space is yours, {user.name}</li>
           {/* The new link */}
           <li><Link to='/'>Dashboard</Link></li>
           <li><Link to='/letters/new'>New letter Entry </Link></li>
