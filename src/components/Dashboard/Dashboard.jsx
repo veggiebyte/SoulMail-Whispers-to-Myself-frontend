@@ -70,6 +70,7 @@ const Dashboard = () => {
         ) : (
           openedLetters.map((letter) => (
            <div key={letter._id}>
+              <span>{letter.title}</span>
               <span> Delivered: {new Date(letter.deliverAt).toLocaleDateString()}</span>
               <Link to={`/letters/${letter._id}/edit`}>View</Link>
               <button onClick={() => handleDelete(letter._id)}>Delete</button>
