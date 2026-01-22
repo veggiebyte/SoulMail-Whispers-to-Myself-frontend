@@ -77,11 +77,7 @@ const addReflection = async (letterId, reflectionData) => {
         headers: getAuthHeaders(),
         body: JSON.stringify(reflectionData)
     });
-    const result = await res.json();
-    if (!result.success) {
-        throw new Error(result.error || 'Failed to add reflection');
-    }
-    return result.data;
+    return res.json();  
 };
 
 // DELETE /letters/:id/reflection/:reflectionId
