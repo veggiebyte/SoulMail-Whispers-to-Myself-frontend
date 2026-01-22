@@ -14,7 +14,7 @@ const Dashboard = () => {
     const fetchLetters = async () => {
       try {
         const fetchedLetters = await letterService.index();
-        setLetters(fetchedLetters);
+        setLetters(fetchedLetters.data || []);
       } catch (err) {
         console.log(err);
       }
