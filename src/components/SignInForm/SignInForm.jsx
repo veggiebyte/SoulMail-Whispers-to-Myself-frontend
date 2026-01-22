@@ -37,8 +37,8 @@ const SignInForm = () => {
 return (
   <div className="page-container">
     <div className="header">
-      <div className="logo-box">LOGO AND SLOGAN</div>
-      <NavBar />  {/* ← Ami's actual NavBar component */}
+      <img src="/images/logo.png" alt="SoulMail Logo" className="logo-image" />
+      <NavBar />
     </div>
     
     <div className="form-box">

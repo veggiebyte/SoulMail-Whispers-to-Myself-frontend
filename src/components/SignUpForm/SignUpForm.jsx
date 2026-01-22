@@ -33,7 +33,7 @@ const SignUpForm = () => {
   return (
     <div className="page-container">
       <div className="header">
-        <div className="logo-box">LOGO AND SLOGAN</div>
+       <img src="/images/logo.png" alt="SoulMail Logo" className="logo-image" />
         <NavBar />
       </div>
       

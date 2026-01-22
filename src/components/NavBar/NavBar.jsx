@@ -66,14 +66,49 @@ const NavBar = () => {
           </button>
         </div>
       ) : (
-        <ul>
-          {/* Home link */}
-          <li><Link to='/'>Home</Link></li>
-          {/* Sign in link */}
-          <li><Link to='/sign-in'>Sign In</Link></li>
-          {/* Sign up link */}
-          <li><Link to='/sign-up'>Sign Up</Link></li>
-        </ul>
+        <div className="nav-buttons">
+          {/* Home button */}
+          <Link to='/' className="nav-image-btn">
+            <img 
+              src="/images/buttons/home_but.png" 
+              alt="Home"
+              className="btn-default"
+            />
+            <img 
+              src="/images/buttons/home_but2.png" 
+              alt="Home"
+              className="btn-hover"
+            />
+          </Link>
+          
+          {/* Sign in button */}
+          <Link to='/sign-in' className="nav-image-btn">
+            <img 
+              src="/images/buttons/sign_in_but.png" 
+              alt="Sign In"
+              className="btn-default"
+            />
+            <img 
+              src="/images/buttons/sign_in_but2.png" 
+              alt="Sign In"
+              className="btn-hover"
+            />
+          </Link>
+          
+          {/* Sign up button */}
+          <Link to='/sign-up' className="nav-image-btn">
+            <img 
+              src="/images/buttons/sign_up_but.png" 
+              alt="Sign Up"
+              className="btn-default"
+            />
+            <img 
+              src="/images/buttons/sign_up_but2.png" 
+              alt="Sign Up"
+              className="btn-hover"
+            />
+          </Link>
+        </div>
       )}
     </nav>
   );
