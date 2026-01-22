@@ -28,10 +28,7 @@ const CreateLetter = () => {
 
     const handleWeatherSelect = (weather) => {
         setFormData({ ...formData, weather });
-    };
-
-    const handleAddGoal = () => {
-        if (goalInput.trim()) {
+ run devicePixelRatio
             setFormData({
                 ...formData,
                 goals: [...formData.goals, { text: goalInput, completed: false }]
