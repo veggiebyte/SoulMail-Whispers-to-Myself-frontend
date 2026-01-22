@@ -49,21 +49,22 @@ const Dashboard = () => {
 
       <div className="dashboard-wrapper">
         <div className="dashboard-greeting">
-          Elevated Salutations, {user?.name}
+          Elevated Salutations, {user?.username}
         </div>
         <p className="dashboard-tagline">Leave yourself a whisper</p>
-      <Link to='/letters/new'>Sire your new whisper</Link>
+
+        <Link to='/letters/new' className="new-letter-link">Sire your new whisper</Link>
 
         <div className="dashboard-content">
           {/* Waiting to be Opened Section */}
           <div className="dashboard-section">
-            <div 
+            <div
               className="section-header"
               onClick={() => setShowWaiting(!showWaiting)}
             >
               <h3>Waiting to be Opened ({waitingLetters.length})</h3>
               <span className="toggle-icon">{showWaiting ? '▼' : '▶'}</span>
-             </div>
+            </div>
 
             {showWaiting && (
               <div className="section-content">
@@ -82,7 +83,7 @@ const Dashboard = () => {
                         <Link to={`/letters/${letter._id}/edit`} className="edit-link">
                           Edit Date
                         </Link>
-                        <button 
+                        <button
                           onClick={() => handleDelete(letter._id)}
                           className="delete-btn"
                         >
@@ -98,14 +99,14 @@ const Dashboard = () => {
 
           {/* Already Opened Section */}
           <div className="dashboard-section">
-            <div 
+            <div
               className="section-header"
               onClick={() => setShowOpened(!showOpened)}
             >
               <h3>Already Opened ({openedLetters.length})</h3>
               <span className="toggle-icon">{showOpened ? '▼' : '▶'}</span>
             </div>
-            
+
             {showOpened && (
               <div className="section-content">
                 {openedLetters.length === 0 ? (
@@ -116,14 +117,14 @@ const Dashboard = () => {
                       <div className="letter-info">
                         <span className="letter-title">{letter.title}</span>
                         <span className="letter-date">
-                          Delivered: {new Date(letter.deliverAt).toLocaleDateString()}
+                          Delivered: {new Date(letter.deliveredAt).toLocaleDateString()}
                         </span>
                       </div>
                       <div className="letter-actions">
                         <Link to={`/letters/${letter._id}`} className="view-link">
                           View
                         </Link>
-                        <button 
+                        <button
                           onClick={() => handleDelete(letter._id)}
                           className="delete-btn"
                         >
