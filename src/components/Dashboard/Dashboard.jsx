@@ -59,7 +59,7 @@ const Dashboard = () => {
           waitingLetters.map((letter) => (
             <div key = {letter._id}>
               <span>{letter.title}</span>
-              <span> Delivery Date: {new Date(letter.deliverAt).toLocaleDateString()}</span>
+              <span> Delivery Date: {new Date(letter.deliveredAt).toLocaleDateString()}</span>
               <Link to={`/letters/${letter._id}/edit`}>Edit Date</Link>
               <button onClick={() => handleDelete(letter._id)}>Delete</button>
             </div>
@@ -75,7 +75,7 @@ const Dashboard = () => {
           openedLetters.map((letter) => (
            <div key={letter._id}>
               <span>{letter.title}</span>
-              <span> Delivered: {new Date(letter.deliverAt).toLocaleDateString()}</span>
+              <span> Delivered: {new Date(letter.deliveredAt).toLocaleDateString()}</span>
               <Link to={`/letters/${letter._id}/edit`}>View</Link>
               <button onClick={() => handleDelete(letter._id)}>Delete</button>
            </div> 
