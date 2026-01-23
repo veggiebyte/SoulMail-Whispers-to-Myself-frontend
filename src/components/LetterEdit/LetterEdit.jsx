@@ -1,8 +1,5 @@
 import { useParams, Link } from 'react-router';
 
-const LetterEdit = () => {
-  const { id } = useParams();
-
   return (
     <main>
       <h1>View/Edit Letter</h1>
@@ -11,6 +8,5 @@ const LetterEdit = () => {
       <Link to='/'>Back to Dashboard</Link>
     </main>
   );
-};
 
 export default LetterEdit;

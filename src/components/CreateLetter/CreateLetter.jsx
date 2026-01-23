@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router';
 import { UserContext } from '../../contexts/UserContext';
 import NavBar from '../NavBar/NavBar';
 import * as letterService from '../../services/letterService';
-
-
 const CreateLetter = () => {
     const navigate = useNavigate();
     const { user } = useContext(UserContext);
@@ -21,14 +19,14 @@ const CreateLetter = () => {
         goals: []
     });
     const [goalInput, setGoalInput] = useState('');
-
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
     const handleWeatherSelect = (weather) => {
         setFormData({ ...formData, weather });
- run devicePixelRatio
+    };
+    const handleAddGoal = () => {
+        if (goalInput.trim()) {
             setFormData({
                 ...formData,
                 goals: [...formData.goals, { text: goalInput, completed: false }]
@@ -36,7 +34,6 @@ const CreateLetter = () => {
             setGoalInput('');
         }
     };
-
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
@@ -46,31 +43,25 @@ const handleSubmit = async (e) => {
     console.error(err);
   }
 };
-
     const moods = [
-        { value: 'happy', emoji: '😊', label: 'Happy' },
-        { value: 'sad', emoji: '😢', label: 'Sad' },
-        { value: 'angry', emoji: '😠', label: 'Angry' },
-        { value: 'anxious', emoji: '😰', label: 'Anxious' },
-        { value: 'excited', emoji: '🤩', label: 'Excited' },
-        { value: 'calm', emoji: '😌', label: 'Calm' }
+        { value: 'happy', emoji: ':blush:', label: 'Happy' },
+        { value: 'sad', emoji: ':cry:', label: 'Sad' },
+        { value: 'angry', emoji: ':angry:', label: 'Angry' },
+        { value: 'anxious', emoji: ':cold_sweat:', label: 'Anxious' },
+        { value: 'excited', emoji: ':star-struck:', label: 'Excited' },
+        { value: 'calm', emoji: ':relieved:', label: 'Calm' }
     ];
-
   return (
   <div className="page-container">
     <div className="header">
       <img src="/images/logo.png" alt="SoulMail Logo" className="logo-image" />
       <NavBar />
     </div>
-
             <div className="create-letter-wrapper">
                 <div className="welcome">This page belongs to you, {user?.username}</div>
-
-
                 <div className="form-inner-box">
                     <h2 className="form-title">Create a Letter</h2>
                     <form onSubmit={handleSubmit}>
-
                         {/* Title - full width */}
                         <div className="form-row">
                             <label>Title:</label>
@@ -82,7 +73,6 @@ const handleSubmit = async (e) => {
                                 required
                             />
                         </div>
-
                         {/* Date and Mood - side by side */}
                         <div className="form-row-split">
                             <div className="form-col-half">
@@ -111,7 +101,6 @@ const handleSubmit = async (e) => {
                                 </select>
                             </div>
                         </div>
-
                         {/* Weather, Temp, Location Row */}
                         <div className="form-row-group">
                             <div className="form-col">
@@ -123,7 +112,7 @@ const handleSubmit = async (e) => {
                                         onClick={() => handleWeatherSelect('sunny')}
                                         title="Sunny"
                                     >
-                                        ☀️
+                                        :sunny:
                                     </button>
                                     <button
                                         type="button"
@@ -131,7 +120,7 @@ const handleSubmit = async (e) => {
                                         onClick={() => handleWeatherSelect('cloudy')}
                                         title="Cloudy"
                                     >
-                                        ☁️
+                                        :cloud:
                                     </button>
                                     <button
                                         type="button"
@@ -139,7 +128,7 @@ const handleSubmit = async (e) => {
                                         onClick={() => handleWeatherSelect('rainy')}
                                         title="Rainy"
                                     >
-                                        🌧️
+                                        :rain_cloud:
                                     </button>
                                     <button
                                         type="button"
@@ -147,7 +136,7 @@ const handleSubmit = async (e) => {
                                         onClick={() => handleWeatherSelect('snowy')}
                                         title="Snowy"
                                     >
-                                        ❄️
+                                        :snowflake:
                                     </button>
                                 </div>
                             </div>
@@ -171,7 +160,6 @@ const handleSubmit = async (e) => {
                                 />
                             </div>
                         </div>
-
                         {/* Current Song */}
                         <div className="form-row">
                             <label>Song I'm currently listening to:</label>
@@ -182,7 +170,6 @@ const handleSubmit = async (e) => {
                                 onChange={handleChange}
                             />
                         </div>
-
                         {/* Top Headline */}
                         <div className="form-row">
                             <label>Top Headline:</label>
@@ -193,7 +180,6 @@ const handleSubmit = async (e) => {
                                 onChange={handleChange}
                             />
                         </div>
-
                         {/* Your Letter */}
                         <div className="form-section">
                             <label className="large-label">What's on your mind?</label>
@@ -206,7 +192,6 @@ const handleSubmit = async (e) => {
                                 required
                             />
                         </div>
-
                         {/* Goals */}
                         <div className="form-section">
                             <label>Your Goals:</label>
@@ -232,10 +217,8 @@ const handleSubmit = async (e) => {
                                 )}
                             </div>
                         </div>
-
 {/* Submit Button */}
 <button type="submit" className="submit-btn">Create Letter</button>
-
 {/* Cancel link */}
 <div className="cancel-link">
   <a onClick={() => navigate('/')}>Cancel and return to Dashboard</a>
@@ -246,5 +229,4 @@ const handleSubmit = async (e) => {
         </div>
     );
 };
-
 export default CreateLetter;
