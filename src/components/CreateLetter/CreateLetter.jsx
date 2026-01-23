@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router';
 import { UserContext } from '../../contexts/UserContext';
 import NavBar from '../NavBar/NavBar';
 import * as letterService from '../../services/letterService';
-
-
 const CreateLetter = () => {
     const navigate = useNavigate();
     const { user } = useContext(UserContext);
@@ -24,17 +22,13 @@ const CreateLetter = () => {
         goals: []
     });
     const [goalInput, setGoalInput] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setErrorMessage('');
     };
-
     const handleWeatherSelect = (weather) => {
         setFormData({ ...formData, weather });
     };
-
     const handleAddGoal = () => {
         if (goalInput.trim()) {
             setFormData({
@@ -44,70 +38,31 @@ const CreateLetter = () => {
             setGoalInput('');
         }
     };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        const selectedDate = new Date(formData.deliveredAt);
-        const tomorrow = new Date();
-        tomorrow.setHours(tomorrow.getHours() + 24);
-        
-        if (selectedDate < tomorrow) {
-            setErrorMessage('Delivery date must be at least 24 hours in the future.');
-            return;
-        }
-        
-        try {
-            const cleanedData = { ...formData };
-            if (!cleanedData.mood) delete cleanedData.mood;
-            if (!cleanedData.deliveryInterval) delete cleanedData.deliveryInterval;
-            if (!cleanedData.weather) delete cleanedData.weather;
-            if (!cleanedData.temperature) delete cleanedData.temperature;
-            if (!cleanedData.location) delete cleanedData.location;
-            if (!cleanedData.currentSong) delete cleanedData.currentSong;
-            if (!cleanedData.topHeadLine) delete cleanedData.topHeadLine;
-            
-            await letterService.create(cleanedData);
-            navigate('/');
-        } catch (err) {
-            console.error('Full error:', err);
-            setErrorMessage(err.message || 'Failed to create letter. Please check all fields and try again.');
-        }
-    };
-
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await letterService.create(formData);
+    navigate('/');
+  } catch (err) {
+    console.error(err);
+  }
+};
     const moods = [
-        { value: '☺️', label: 'Happy' },
-        { value: '😢', label: 'Sad' },
-        { value: '😰', label: 'Anxious' },
-        { value: '🤩', label: 'Excited' },
-        { value: '🙏', label: 'Grateful' },
-        { value: '😫', label: 'Frustrated' }
+        { value: 'happy', emoji: ':blush:', label: 'Happy' },
+        { value: 'sad', emoji: ':cry:', label: 'Sad' },
+        { value: 'angry', emoji: ':angry:', label: 'Angry' },
+        { value: 'anxious', emoji: ':cold_sweat:', label: 'Anxious' },
+        { value: 'excited', emoji: ':star-struck:', label: 'Excited' },
+        { value: 'calm', emoji: ':relieved:', label: 'Calm' }
     ];
-
-    const deliveryIntervals = [
-        { value: '1week', label: 'Weekly' },
-        { value: '2weeks', label: 'Bi-Weekly' },
-        { value: '1month', label: 'Monthly' },
-        { value: '6months', label: '6 Months' },
-        { value: '1year', label: 'Yearly' },
-        { value: '5years', label: '5 Years' },
-        { value: 'custom', label: 'Custom Interval:' }
-    ];
-
-    const today = new Date().toISOString().split('T')[0];
-
-    return (
-        <div className="page-container">
-            <div className="header">
-                <img src="/images/logo.png" alt="SoulMail Logo" className="logo-image" />
-                <NavBar />
-            </div>
-
+  return (
+  <div className="page-container">
+    <div className="header">
+      <img src="/images/logo.png" alt="SoulMail Logo" className="logo-image" />
+      <NavBar />
+    </div>
             <div className="create-letter-wrapper">
-                <div className="welcome">
-                    This page belongs to you, {user?.username}
-                </div>
-
+                <div className="welcome">This page belongs to you, {user?.username}</div>
                 <div className="form-inner-box">
                     <h2 className="form-title">Create a Letter</h2>
                     <p className="required-note">* Required fields</p>
@@ -119,6 +74,7 @@ const CreateLetter = () => {
                     )}
                     
                     <form onSubmit={handleSubmit}>
+                        {/* Title - full width */}
                         <div className="form-row">
                             <label>Title: <span className="required-asterisk">*</span></label>
                             <input
@@ -129,7 +85,7 @@ const CreateLetter = () => {
                                 required
                             />
                         </div>
-
+                        {/* Date and Mood - side by side */}
                         <div className="form-row-split">
                             <div className="form-col-half">
                                 <label>Letter Delivery Date: <span className="required-asterisk">*</span></label>
@@ -199,7 +155,7 @@ const CreateLetter = () => {
                                 </select>
                             </div>
                         </div>
-
+                        {/* Weather, Temp, Location Row */}
                         <div className="form-row-group">
                             <div className="form-col">
                                 <label>Weather:</label>
@@ -210,7 +166,7 @@ const CreateLetter = () => {
                                         onClick={() => handleWeatherSelect('sunny')}
                                         title="Sunny"
                                     >
-                                        ☀️
+                                        :sunny:
                                     </button>
                                     <button
                                         type="button"
@@ -218,7 +174,7 @@ const CreateLetter = () => {
                                         onClick={() => handleWeatherSelect('cloudy')}
                                         title="Cloudy"
                                     >
-                                        ☁️
+                                        :cloud:
                                     </button>
                                     <button
                                         type="button"
@@ -226,7 +182,7 @@ const CreateLetter = () => {
                                         onClick={() => handleWeatherSelect('rainy')}
                                         title="Rainy"
                                     >
-                                        🌧️
+                                        :rain_cloud:
                                     </button>
                                     <button
                                         type="button"
@@ -234,7 +190,7 @@ const CreateLetter = () => {
                                         onClick={() => handleWeatherSelect('snowy')}
                                         title="Snowy"
                                     >
-                                        ❄️
+                                        :snowflake:
                                     </button>
                                 </div>
                             </div>
@@ -258,7 +214,7 @@ const CreateLetter = () => {
                                 />
                             </div>
                         </div>
-
+                        {/* Current Song */}
                         <div className="form-row">
                             <label>Song I'm currently listening to:</label>
                             <input
@@ -268,7 +224,7 @@ const CreateLetter = () => {
                                 onChange={handleChange}
                             />
                         </div>
-
+                        {/* Top Headline */}
                         <div className="form-row">
                             <label>Top Headline:</label>
                             <input
@@ -278,7 +234,7 @@ const CreateLetter = () => {
                                 onChange={handleChange}
                             />
                         </div>
-
+                        {/* Your Letter */}
                         <div className="form-section">
                             <label className="large-label">What's on your mind? <span className="required-asterisk">*</span></label>
                             <textarea
@@ -290,7 +246,7 @@ const CreateLetter = () => {
                                 required
                             />
                         </div>
-
+                        {/* Goals */}
                         <div className="form-section">
                             <label>Your Goals:</label>
                             <div className="goal-input-row">
@@ -315,17 +271,16 @@ const CreateLetter = () => {
                                 )}
                             </div>
                         </div>
-
-                        <button type="submit" className="submit-btn">Create Letter</button>
-
-                        <div className="cancel-link">
-                            <a onClick={() => navigate('/')}>Cancel and return to Dashboard</a>
-                        </div>
+{/* Submit Button */}
+<button type="submit" className="submit-btn">Create Letter</button>
+{/* Cancel link */}
+<div className="cancel-link">
+  <a onClick={() => navigate('/')}>Cancel and return to Dashboard</a>
+</div>
                     </form>
                 </div>
             </div>
         </div>
     );
 };
-
 export default CreateLetter;
