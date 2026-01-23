@@ -99,8 +99,7 @@ const CreateLetter = () => {
             console.error('Error creating letter:', err);
         }
     };
-
-    const moods = [
+   const moods = [
         { value: '☺️', label: 'Happy' },
         { value: '😢', label: 'Sad' },
         { value: '😰', label: 'Anxious' },
