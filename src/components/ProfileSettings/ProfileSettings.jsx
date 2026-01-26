@@ -126,7 +126,7 @@ const ProfileSettings = () => {
                         </div>
 
                         <div className="form-row">
-                            <label htmlFor="birthday">Name:</label>
+                            <label htmlFor="birthday">Birthday:</label>
                             <input
                             type="text"
                             id="birthday"
