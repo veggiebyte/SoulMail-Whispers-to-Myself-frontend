@@ -152,11 +152,11 @@ const CreateLetter = () => {
                                     required
                                 >
                                     <option value="">Select delivery time...</option>
-                                    <option value="1week">In One Week</option>
-                                    <option value="1month">In One Month</option>
-                                    <option value="6months">In 6 Months</option>
-                                    <option value="1year">In One Year</option>
-                                    <option value="5years">In 5 Years</option>
+                                    <option value="1week">One Week</option>
+                                    <option value="1month">One Month</option>
+                                    <option value="6months">6 Months</option>
+                                    <option value="1year">One Year</option>
+                                    <option value="5years">5 Years</option>
                                     <option value="custom">Custom Date</option>
                                 </select>
 
