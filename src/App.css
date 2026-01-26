@@ -6,17 +6,23 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: white;
+  background: #f5f1ff;
   color: black;
   padding: 40px;
+   background: url('/images/purple_gradient_bgd.png') center center no-repeat fixed;
+  background-size: cover;
+
 }
 
 .page-container {
+  background: url('/images/lined_paper_bgd.jpg') center center no-repeat;
+  background-size: cover;
   border: 2px solid black;
   border-radius: 35px;
   max-width: 1000px;
   margin: 0 auto;
   padding: 40px;
+
 }
 
 .header {
@@ -27,7 +33,7 @@ body {
 }
 
 .logo-image {
-  height: 200px;
+  height: 250px;
   width: auto;
 }
 
