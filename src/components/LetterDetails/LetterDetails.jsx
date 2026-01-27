@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { UserContext } from '../../contexts/UserContext';
 import NavBar from '../NavBar/NavBar';
+import { CelebrationModal } from '../Celebrations';
+import { getCelebrationMessage, CELEBRATION_TYPES } from '../../utils/celebrationUtils';
 import * as letterService from '../../services/letterService';
 import './LetterDetails.css';
 
@@ -16,6 +18,12 @@ const LetterDetails = () => {
     const [reflectionInput, setReflectionInput] = useState('');
     const [submittingReflection, setSubmittingReflection] = useState(false);
     const [formError, setFormError] = useState(null);
+
+    const [celebration, setCelebration] = useState(null);
+    const [goalReflections, setGoalReflections] = useState({});
+    const [showCarryForward, setShowCarryForward] = useState(null);
+    const [availableLetters, setAvailableLetters] = useState([]);
+    const [selectedLetter, SetSelectedLetters] = useState('');
 
     const moods = {
         '☺️': { emoji: '☺️', label: 'Happy' },
@@ -52,6 +60,20 @@ const LetterDetails = () => {
             fetchLetter();
         }
     }, [user, id]);
+
+    useEffect(() => {
+        const fetchAvailableLetters = async () => {
+            if (!showCarryForward) return;
+            try {
+                const letters = await letterService.index();
+                const available = letters.filter(l => !l.isDelivered && l._id !== id);
+                setAvailableLetters(available);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchAvailableLetters();
+    }, [showCarryForward, id]);
 
     const handleDelete = async () => {
         const confirmDelete = window.confirm('Are you sure you want to delete this letter? This action cannot be undone.');
@@ -99,6 +121,77 @@ const LetterDetails = () => {
             console.error(err);
             setFormError(err.message);
         }
+    };
+
+    const handleGoalStatusChange = async (goalId, status) => {
+        try {
+            const updatedLetter = await letterService.updateGoalStatus(id, goalId, { status });
+            setLetter(updatedLetter);
+
+            if (status === 'accomplished') {
+                const goals = letter.goals?.find(g => g.id === goalId);
+                setCelebration({
+                    type: CELEBRATION_TYPES.GOAL_ACCOMPLISHED,
+                    ...getCelebrationMessage('goalAccomplished', { goalText: goals?.text })
+            });
+            }
+        } catch (err) {
+            console.log(err);
+            setFormError(err.message);
+        }
+    };
+
+    const handleAddGoalReflection = async (goalId) => {
+        try {
+            const reflection = goalReflections[goalId];
+            if (!reflection?.trim()) return;
+
+            const updatedLetter =await letterService.addGoalReflection(id, goalId, reflection);
+            setLetter(updatedLetter);
+            setGoalReflections({ ...goalReflections, [goalId]: '' });
+        } catch (err) {
+            console.log(err)
+            setFormError(err.message);
+        }
+    };
+    
+    const handleCarryForward = async (goalId) => {
+        try {
+            if (!selectedLetter) return;
+
+            const result = await letterService.carryGoalForward(id, goalId, selectedLetter);
+            setLetter(result.oldLetter);
+            setShowCarryForward(null);
+            SetSelectedLetters('');
+        } catch (err) {
+            console.log(err);
+            setFormError(err.message);
+        }
+    };
+
+    const handleCelebrationClose = () => {
+        setCelebration(null);
+    };
+
+    const getStatusEmoji = (status) => {
+        const emojis = {
+            pending: '⏳',
+            completed: '✅',
+            inProgress: '🔄',
+            abandoned: '🛑',
+            carriedForward: '➡️'
+        };
+        return emojis[status] || '⏳';
+    };
+    const getStatusLabel = (status) => {
+        const labels = {
+            pending: 'Pending',
+            accomplished: 'Accomplished',
+            inProgress: 'In Progress',
+            abandoned: 'Release',
+            carriedForward: 'Carried Forward'
+        };
+        return labels[status] || 'Pending';
     };
 
     const formatDate = (dateString) => {
@@ -156,6 +249,14 @@ const LetterDetails = () => {
 
     return (
         <div className="page-container">
+            {/* Celebration Modal */}
+            {celebration && (
+                <CelebrationModal
+                celebration={celebration}
+                onClose={handleCelebrationClose}
+                />
+            )}
+
             <div className="header">
                 <img src="/images/logo.png" alt="SoulMail Logo" className="logo-image" />
                 <NavBar />
@@ -242,9 +343,114 @@ const LetterDetails = () => {
                         </div>
                     )}
 
-                    <div className="letter-reflections-section">
-                        <h3>Reflections</h3>
+                    {/* New Goals Array Format */}
+                    {letter.goals && letter.goals.length > 0 && (
+                        <div className='letter-goals-section'>
+                            <h3>Your Goals ({letter.goals.length})</h3>
 
+                            {letter.goals.map((goal) => (
+                                <div key={goal._id} className='goal-card'>
+                                    <div className='goal-header'>
+                                        <span className='goal-status-emoji'>{getStatusEmoji(goal.status)}</span>
+                                        <span className='goal-text'>{goal.text}</span>
+                                        <span className='goal-status-label'>{getStatusLabel}</span>
+                                    </div>
+
+                    {/* Goal Reflection */}
+                    {goal.reflection && (
+                        <div className='goal-reflection-display'>
+                            <p><em>"{goal.reflection}"</em></p>
+                            </div>
+                    )}  
+
+                    {/* Carried Forward */}
+                    {goal.carriedForwardTo && (
+                        <p className='carried-forward-info'>➡️ Carried forward to another letter</p>
+                    )}
+                    {goal.carriedForwardFrom && (
+                        <p className='carried-forward-info'>⬅️ Carried forward from previous letter</p>
+                    )}
+
+                    {/* Goal Actions */}
+                    {letter.isDelivered && goal.status === 'pending' && (
+                        <div className='goal-actions'>
+                            <button
+                            className='goal-btn-accomplished'
+                            onClick={() => handleGoalStatusChange(goal._id, 'accomplished')}>✅ Accomplished</button>
+                            <button
+                            className='goal-btn-in-progress'
+                            onClick={() => handleGoalStatusChange(goal._id, 'inProgress')}>🔄 In Progess</button>
+'                           <button
+                            className='goal-btn-carry-forward'
+                            onClick={() => setShowCarryForward(goal._id)}>➡️ Carry Forward</button>
+                            <button
+                            className='goal-btn-abandon'
+                            onClick={() => handleGoalStatusChange(goal._id, 'abandoned')}>🛑 Release</button>
+                        </div>    
+                    )}
+
+                    {/* In Progress to be completed */}
+                    {letter.isDelivered && goal.status === 'inProgress' && (
+                        <div className='goal-actions'>
+                            <button
+                            className='goal-btn-accomplished'
+                            onClick={() => handleGoalStatusChange(goal._id, 'accomplished')}>✅ Mark Accomplished</button>
+                            <button
+                            className='goal-btn-carry-forward'
+                            onClick={() => setShowCarryForward(goal._id)}>➡️ Carry Forward</button>
+                        </div>    
+                    )}
+
+                    {/* Add Goal Reflection */}
+                    {letter.isDelievered && goal.status !== 'pending' && !goal.reflection && (
+                        <div className='goal-reflection-form'>
+                            <input
+                                type='text'
+                                placeholder='Add a note about this goal...'
+                                value= {goalReflections[goal._id] || ''}
+                                onChange={(e) => setGoalReflections({
+                                    ...goalReflections,
+                                    [goal._id]: e.target.value
+                                })}
+                                maxLength={175}
+                                />
+                            <button onClick={() => handleAddGoalReflection(goal._id)}>Add</button>
+                        </div>    
+                    )}
+                    {/* Carry Forward Modal */}
+                    {showCarryForward === goal._id && (
+                        <div className='carry-forward-modal'>
+                            <h4>Carry this goal to:</h4>
+                            {availableLetters.length === 0 ? (
+                                <p>No undelivered letters available. Create a new letter first!</p>
+                            ) : (
+                                <>
+                                <select 
+                                    value={selectedLetter}
+                                    onChange={(e) => SetSelectedLetters(e.target.value)}>
+
+                                   <option value="">Select a letter...</option>
+                                   {availableLetters.map((l) => (
+                                        <option key={l._id} value={l._id}>
+                                            {l.title} (Delivers:{formatDate(l.DeliveredAt)})
+                                        </option>
+                                   ))} 
+                                </select>
+                                <div className='carry-forward-actions'>
+                                    <button onClick={() => handleCarryForward(goal._id)}>Carry Forward</button>
+                                    <button onClick={() => setShowCarryForward(null)}>Cancel</button>
+                                    </div>    
+                                </>
+                            )}
+                        </div>    
+                    )}
+                </div>    
+            ))}
+        </div>          
+    )}
+        <div className="letter-reflections-section">
+                        <h3>Reflections</h3>
+                        
                         {letter.reflections && letter.reflections.length > 0 ? (
                             <div className="reflections-list">
                                 {letter.reflections.map((reflection) => (
