@@ -6,6 +6,7 @@ import { CelebrationModal } from '../Celebrations';
 import { getCelebrationMessage, CELEBRATION_TYPES } from '../../utils/celebrationUtils';
 import * as letterService from '../../services/letterService';
 import './LetterDetails.css';
+import FlipLetter from '../FlipLetter/FlipLetter';
 
 const LetterDetails = () => {
     const { id } = useParams();
@@ -23,7 +24,7 @@ const LetterDetails = () => {
     const [goalReflections, setGoalReflections] = useState({});
     const [showCarryForward, setShowCarryForward] = useState(null);
     const [availableLetters, setAvailableLetters] = useState([]);
-    const [selectedLetter, SetSelectedLetters] = useState('');
+    const [selectedLetter, setSelectedLetters] = useState('');
 
     const moods = {
         '☺️': { emoji: '☺️', label: 'Happy' },
@@ -162,7 +163,7 @@ const LetterDetails = () => {
             const result = await letterService.carryGoalForward(id, goalId, selectedLetter);
             setLetter(result.oldLetter);
             setShowCarryForward(null);
-            SetSelectedLetters('');
+            setSelectedLetters('');
         } catch (err) {
             console.log(err);
             setFormError(err.message);
@@ -247,87 +248,70 @@ const LetterDetails = () => {
         );
     }
 
-    return (
-        <div className="page-container">
-            {/* Celebration Modal */}
-            {celebration && (
-                <CelebrationModal
-                celebration={celebration}
-                onClose={handleCelebrationClose}
-                />
-            )}
+    // FRONT SIDE letter Content
+    const letterFront = (
+        <div className='letter-front-content'>
+            <div className='letter-header-section'>
+                <h1 className='letter-title-display'>{letter.title}</h1>
+                <p className='letter-delivery-date'>
+                    Delivered on {formatDate(letter.deliveredAt)}
+                </p>
+            </div>
+            <div className='letter-metadata'>
+                {letter.mood && moods[letter.mood] && (
+                    <div className='metadata-item'>
+                        <span className='metadata-label'>Mood:</span>
+                        <span className='metadata-value'>
+                            {moods[letter.mood].emoji} {moods[letter.mood].label}
+                        </span>
+                    </div>    
+                )}
 
-            <div className="header">
-                <img src="/images/logo.png" alt="SoulMail Logo" className="logo-image" />
-                <NavBar />
+                {letter.weather && weatherIcons[letter.weather] && (
+                    <div className='metadata-item'>
+                        <span className='metadata-label'>Weather:</span>
+                        <span className='metadata-value'>
+                            {weatherIcons[letter.weather]} {letter.weather.charAt(0).toUpperCase() + letter.weather.slice(1)}
+                        </span>
+                     </div>   
+                )}
+
+                {letter.temperature && (
+                    <div className='metadata-item'>
+                        <span className='metadata-label'>Temperature:</span>
+                        <span className='metadata-value'>{letter.temperature}℉</span>
+                    </div>    
+                )}
+
+                {letter.location && (
+                    <div className='metadata-item'>
+                        <span className='metadata-label'>Location:</span>
+                        <span className='metadata-value'>{letter.location}</span>
+                    </div>
+                )}
+
+                {letter.currentSong && (
+                    <div className='metadata-item'>
+                        <span className='metadata-label'>Song:</span>
+                        <span className='metadata-value'>{letter.currentSong}</span>
+                    </div>
+                )}
+
+                {letter.topHeadLine && (
+                    <div className='metadata-item'>
+                        <span className='metadata-label'>Top Headline:</span>
+                        <span className='metadata-value'>{letter.topHeadLine}</span>
+                    </div>
+                )}
             </div>
 
-            <div className="letter-details-wrapper">
-                <Link to="/" className="back-link">← Back to Dashboard</Link>
-
-                <div className="letter-details-box">
-                    <div className="letter-header-section">
-                        <h1 className="letter-title-display">{letter.title}</h1>
-                        <p className="letter-delivery-date">
-                            Delivered on {formatDate(letter.deliveredAt)}
-                        </p>
-                    </div>
-
-                    <div className="letter-metadata">
-                        {letter.mood && moods[letter.mood] && (
-                            <div className="metadata-item">
-                                <span className="metadata-label">Mood:</span>
-                                <span className="metadata-value">
-                                    {moods[letter.mood].emoji} {moods[letter.mood].label}
-                                </span>
-                            </div>
-                        )}
-
-                        {letter.weather && weatherIcons[letter.weather] && (
-                            <div className="metadata-item">
-                                <span className="metadata-label">Weather:</span>
-                                <span className="metadata-value">
-                                    {weatherIcons[letter.weather]} {letter.weather.charAt(0).toUpperCase() + letter.weather.slice(1)}
-                                </span>
-                            </div>
-                        )}
-
-                        {letter.temperature && (
-                            <div className="metadata-item">
-                                <span className="metadata-label">Temperature:</span>
-                                <span className="metadata-value">{letter.temperature}°F</span>
-                            </div>
-                        )}
-
-                        {letter.location && (
-                            <div className="metadata-item">
-                                <span className="metadata-label">Location:</span>
-                                <span className="metadata-value">{letter.location}</span>
-                            </div>
-                        )}
-
-                        {letter.currentSong && (
-                            <div className="metadata-item">
-                                <span className="metadata-label">Song:</span>
-                                <span className="metadata-value">{letter.currentSong}</span>
-                            </div>
-                        )}
-
-                        {letter.topHeadLine && (
-                            <div className="metadata-item">
-                                <span className="metadata-label">Top Headline:</span>
-                                <span className="metadata-value">{letter.topHeadLine}</span>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="letter-content-section">
-                        <h3>Your Letter</h3>
-                        <div className="letter-content-display">
-                            {letter.content}
-                        </div>
-                    </div>
-
+            <div className='letter-content-section'>
+                <h3>Your Letter</h3>
+                <div className='letter-content-display'>
+                    {letter.content}
+                </div>
+            </div>
+            {/* Old Goals Format */}
                     {(letter.goal1 || letter.goal2 || letter.goal3) && (
                         <div className="letter-goals-section">
                             <h3>Goals You Set</h3>
@@ -342,7 +326,6 @@ const LetterDetails = () => {
                             </div>
                         </div>
                     )}
-
                     {/* New Goals Array Format */}
                     {letter.goals && letter.goals.length > 0 && (
                         <div className='letter-goals-section'>
@@ -353,10 +336,8 @@ const LetterDetails = () => {
                                     <div className='goal-header'>
                                         <span className='goal-status-emoji'>{getStatusEmoji(goal.status)}</span>
                                         <span className='goal-text'>{goal.text}</span>
-                                        <span className='goal-status-label'>{getStatusLabel}</span>
+                                        <span className='goal-status-label'>{getStatusLabel(goal.status)}</span>
                                     </div>
-
-                    {/* Goal Reflection */}
                     {goal.reflection && (
                         <div className='goal-reflection-display'>
                             <p><em>"{goal.reflection}"</em></p>
@@ -382,7 +363,7 @@ const LetterDetails = () => {
                             onClick={() => handleGoalStatusChange(goal._id, 'inProgress')}>🔄 In Progess</button>
 '                           <button
                             className='goal-btn-carry-forward'
-                            onClick={() => setShowCarryForward(goal._id)}>➡️ Carry Forward</button>
+                            onClick={() => setShowCarryForward(goal._id, 'carryForward')}>➡️ Carry Forward</button>
                             <button
                             className='goal-btn-abandon'
                             onClick={() => handleGoalStatusChange(goal._id, 'abandoned')}>🛑 Release</button>
@@ -397,7 +378,7 @@ const LetterDetails = () => {
                             onClick={() => handleGoalStatusChange(goal._id, 'accomplished')}>✅ Mark Accomplished</button>
                             <button
                             className='goal-btn-carry-forward'
-                            onClick={() => setShowCarryForward(goal._id)}>➡️ Carry Forward</button>
+                            onClick={() => setShowCarryForward(goal._id, 'carryForward')}>➡️ Carry Forward</button>
                         </div>    
                     )}
 
@@ -427,12 +408,12 @@ const LetterDetails = () => {
                                 <>
                                 <select 
                                     value={selectedLetter}
-                                    onChange={(e) => SetSelectedLetters(e.target.value)}>
+                                    onChange={(e) => setSelectedLetters(e.target.value)}>
 
                                    <option value="">Select a letter...</option>
                                    {availableLetters.map((l) => (
                                         <option key={l._id} value={l._id}>
-                                            {l.title} (Delivers:{formatDate(l.DeliveredAt)})
+                                            {l.title} (Delivers:{formatDate(l.deliveredAt)})
                                         </option>
                                    ))} 
                                 </select>
@@ -448,8 +429,16 @@ const LetterDetails = () => {
             ))}
         </div>          
     )}
-        <div className="letter-reflections-section">
-                        <h3>Reflections</h3>
+    <p className='flip-hint'>👇 Flip the page to add or view reflections</p>
+</div>
+    );
+
+    const letterBack = (
+        <div className='letter-back-content'>
+            <div className='letter-header-section'>
+                <h2>✨ Reflections</h2>
+                <p className='letter-delivery-date'>Lokking back at: {letter.title}</p>
+        </div>
                         
                         {letter.reflections && letter.reflections.length > 0 ? (
                             <div className="reflections-list">
@@ -513,7 +502,31 @@ const LetterDetails = () => {
                                 </button>
                             </div>
                         </form>
-                    </div>
+                        <p className='flip-hint'>👇 Flip back to read your letter</p>
+        </div>
+        );
+
+        {/* Main Render */}
+    return (
+        <div className="page-container">
+            {/* Celebration Modal */}
+            {celebration && (
+                <CelebrationModal
+                celebration={celebration}
+                onClose={handleCelebrationClose}
+                />
+            )}
+
+            <div className="header">
+                <img src="/images/logo.png" alt="SoulMail Logo" className="logo-image" />
+                <NavBar />
+            </div>
+
+            <div className="letter-details-wrapper">
+                <Link to="/" className="back-link">← Back to Dashboard</Link>
+
+                {/* Flip Letter Component */}
+                <FlipLetter front={letterFront} back={letterBack} />
 
                     <div className="letter-actions-section">
                         <button onClick={handleDelete} className="delete-btn-large">
@@ -522,7 +535,6 @@ const LetterDetails = () => {
                     </div>
                 </div>
             </div>
-        </div>
     );
 };
 

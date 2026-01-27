@@ -590,3 +590,27 @@
     width: 100%;
   }
 }
+.flip-hint {
+  text-align: center;
+  color: #7b68A4;
+  font-style: italic;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px dashed #9b88c4;
+}
+.letter-front-content,
+.letter-back-content {
+  padding: 30px;
+}
+.letter-back-content
+.letter-header-section {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #9B88C4;
+}
+.letter-back-content h2 {
+  color: #7b68A4;
+  font-size: 28px;
+  margin: 0 0 10px 0;
+}

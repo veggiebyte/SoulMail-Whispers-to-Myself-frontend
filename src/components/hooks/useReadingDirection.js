@@ -21,7 +21,7 @@ const useReadingDirection = () => {
             }
 
             const cssDir = getComputedStyle(document.documentElement).direction;
-            if (cssDir == 'rtl' || cssDir === 'ltr') {
+            if (cssDir === 'rtl' || cssDir === 'ltr') {
                 return cssDir;
             }
             const lang = navigator.language?.toLowerCase() || 'en';

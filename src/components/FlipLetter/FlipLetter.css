@@ -1,13 +1,19 @@
 .flip-container {
+    position: relative;
     perspective: 1500px;
     width: 100%
+    
 }
 .flip-card {
     position: relative;
-    width: 100;
+    width: 100%;
     min-height: 500px;
     transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
     transform-style: preserve-3d;
+}
+.flip-container.ltr
+.flip-card.flipped {
+    transform: rotateY(180deg)
 }
 .flip-container.rtl 
 .flip-card.flipped {
@@ -61,7 +67,7 @@
     bottom: 0;
     width: 0;
     height: 0;
-    transition: all 0.3 ease;
+    transition: all 0.3s ease;
 }
 .flip-container.ltr
 .corner-fold,
@@ -79,17 +85,15 @@
     border-right: 40px solid transparent;
     border-left: none;
 }
-.page-corner.hover
-.corner-fold,
-.page-corner:hover
-.corner-fold {
-    border-bottom: 70px;
+.page-corner.hover .corner-fold,
+.page-corner:hover .corner-fold {
+    border-bottom-width: 70px;
 }
 .flip-container.ltr .page-corner.hover .corner-fold,
 .flip-container.ltr .page-corner:hover .corner-fold,
 .flip-container .page-corner.hover .corner-fold,
 .flip-container .page-corner:hover .corner-fold {
-    border-left: 70px;
+    border-left-width: 70px;
 }
 .flip-container.rtl .page-corner.hover .corner-fold,
 .flip-container.rtl .page-corner:hover .corner-fold {
