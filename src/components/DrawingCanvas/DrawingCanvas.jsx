@@ -89,7 +89,7 @@ const DrawingCanvas = ({ onSave }) => {
                     />
                 ))}
             </div>
-            {/* Drawing Canvas */}
+            {/* Canvas */}
             <canvas
                 ref={canvasRef}
                 width={400}
