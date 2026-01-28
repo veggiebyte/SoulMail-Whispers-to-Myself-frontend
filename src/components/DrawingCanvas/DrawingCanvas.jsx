@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect} from 'react';
-// import './DrawingCanvas.css';
+import './DrawingCanvas.css';
 
 const DrawingCanvas = ({ onSave }) => {
     const canvasRef = useRef(null);
