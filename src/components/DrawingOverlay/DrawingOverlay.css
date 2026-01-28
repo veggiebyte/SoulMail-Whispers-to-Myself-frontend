@@ -1,0 +1,148 @@
+.drawing-overlay-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    pointer-events: auto;
+}
+.overlay-toolbar {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 20px;
+    background: white;
+    border: 2px solid #7b68a4;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 101;
+}
+.overlay-colors {
+    display: flex;
+    gap: 8px;
+}
+.overlay-color-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.overlay-color-btn:hover {
+    transform: scale(1.1);
+}
+.overlay-color-btn.active {
+    border-color: #333;
+    transform: scale(1.2);
+    box-shadow: 0 0 0 2px white, 0, 0, 0, 4px #7b68a4;
+}
+.overlay-actions {
+    display: flex;
+    gap: 8px;
+}
+.overlay-btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.overlay-btn.clear {
+    background: #fff3e0;
+    color: #e65100;
+}
+.overlay-btn.clear:hover {
+    background: #ffe0b2;
+}
+.overlay-btn.save {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+.overlay-btn.save:hover {
+    background: #c8e6c9;
+}
+.overlay-btn.close {
+    background: #f5f1ff;
+    color: #7b68a4;
+}
+.overlay-btn.close:hover {
+    background: #7b68a4;
+    color: white;
+}
+/* Canvas */
+.drawing-overlay-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+    touch-action: none;
+    background: transparent;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .overlay-toolbar {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 15px;
+        border-radius: 15px;
+        top: 5px;
+    }
+    .overlay-colors {
+        gap: 6px;
+    }
+    .overlay-color-btn {
+        width: 24px;
+        height: 24px;
+    }
+    .overlay-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .overlay-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+
+/* Animation for toolbar appearing */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+.overlay-toolbar {
+    animation: slideDown 0.3s ease;
+}
+
+/* drawing mode indicator */
+.drawing-overlay-container::before {
+    content: '✏️ Drawing Mode';
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 16px;
+    background: rgba(123, 104, 164, 0.9);
+    color: white;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 101;
+    pointer-events: none;
+}
